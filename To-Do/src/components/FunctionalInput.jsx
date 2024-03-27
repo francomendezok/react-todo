@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // eslint-disable-next-line react/function-component-definition, react/prop-types
 const FunctionalInput = ({ name }) => {
@@ -25,7 +25,6 @@ const FunctionalInput = ({ name }) => {
       <h3>{name}</h3>
       {/* The input field to enter To-Do's */}
       <form onSubmit={handleSubmit}>
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="task-entry">Enter a task: </label>
         <input
           type="text"
