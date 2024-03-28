@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 /* eslint-disable react/destructuring-assignment */
 import { Component } from 'react';
@@ -9,14 +10,14 @@ class ClassInput extends Component {
     this.state = {
       todos: ['Just some demo tasks', 'As an example'],
       inputVal: '',
+      hasInput: false,
+      edit: ''
     };
 
-    this.editState = {
-      hasInput: false
-    }
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   handleInputChange(e) {
@@ -34,13 +35,11 @@ class ClassInput extends Component {
     }));
   }
 
-  handleEdit() {
-    this.setState({
-      editState: !this.state.editState
-    }, () => {
-      // Este alert mostrará el nuevo valor de editState después de que se haya actualizado el estado
-      alert(this.state.editState);
-    });
+  handleEdit(index) {
+    this.setState((state) => ({
+      hasInput: !state.hasInput,
+      edit: index
+    }));
   }
   
 
@@ -73,14 +72,16 @@ class ClassInput extends Component {
           <button type="submit">Submit</button>
         </form>
         <h4>All the tasks!</h4>
-        {this.state.todos.length}
+        <Count todos={this.state.todos} /> {/* Render the Count component and pass todos as props */}
         {/* The list of all the To-Do's, displayed */}
         <ul>
           {this.state.todos.map((todo) => (
             <div style={{display: 'flex', margin: '1rem' }}>
-              <li key={todo}>{todo}</li>
-              <button onClick={() => this.handleEdit()} style={{backgroundColor: 'orange', cursor: 'pointer'}}>Edit</button>
-              <button onClick={() => this.handleDelete(todo)} style={{backgroundColor: 'red', cursor: 'pointer'}}>Delete</button>
+              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} key={todo}/>
+              
+              {/*This buttons should be dinamic components, edit to resumbit and delete to cancel*/}
+              <button key={todo} onClick={() => this.handleEdit(todo)} style={{backgroundColor: 'orange', cursor: 'pointer'}}>Edit</button>
+              <button key={todo} onClick={() => this.handleDelete(todo)} style={{backgroundColor: 'red', cursor: 'pointer'}}>Delete</button>
             </div>
           ))}
         </ul>
@@ -89,16 +90,31 @@ class ClassInput extends Component {
   }
 }
 
-class Counter extends Component {
+class Count extends Component {
+  render() {
+    const count = this.props.todos.length;
+
+    return (
+      <div>
+        <h4>Number of Todos: {count}</h4>
+      </div>
+    );
+  }
+}
+
+class EditBox extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
-
-  sumList(list) {
-    return list.length
-  }
-
-
+  render() {
+    const { todo, hasInput, edit } = this.props;
+    console.log(edit);
+      return (
+        <div>
+          {hasInput && edit === todo ? <input type='text' /> : <li key={todo}>{todo}</li>}
+        </div>
+      );
+    }
 }
 
 export default ClassInput;
