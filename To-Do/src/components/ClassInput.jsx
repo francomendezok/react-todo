@@ -19,7 +19,6 @@ class ClassInput extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleReSubmit = this.handleReSubmit.bind(this);
 
   }
 
@@ -38,18 +37,6 @@ class ClassInput extends Component {
     }));
   }
 
-  handleReSubmit() {
-    alert('hey')
-    // e.preventDefault();
-    // let index = this.state.todos.indexOf(todo)
-    // let arr = [...this.state.todos]
-    // arr[index] = e.inputVal
-    // this.setState(() => ({
-    //   todos: arr,
-    //   inputVal: ''
-    // }));
-    // this.handleEdit(index)
-  }
 
   handleEdit(index) {
     this.setState((state) => ({
@@ -93,7 +80,7 @@ class ClassInput extends Component {
         <ul>
           {this.state.todos.map((todo) => (
             <div style={{display: 'flex', margin: '1rem' }}>
-              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} />              
+              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} handleSubmit={this.handleSubmit} handleInputChange={this.handleInputChange} />              
             </div>
           ))}
         </ul>
@@ -116,11 +103,18 @@ class Count extends Component {
 
 class EditAndSubmit extends Component {
   render() {
-    const { todo, handleEdit, handleReSubmit } = this.props;
+    const { todo, handleEdit, handleSubmit, handleInputChange } = this.props;
     return (
       <div>
-        <input type='text' />
-        <button onClick={() => handleReSubmit()} style={{backgroundColor: 'green', cursor: 'pointer'}}>Resubmit</button>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="task-entry"
+            value={todo}
+            onChange={handleInputChange}
+          />
+          <button style={{backgroundColor: 'green', cursor: 'pointer'}} type="submit">Resubmit</button>
+        </form>
         <button onClick={() => handleEdit(todo)} style={{backgroundColor: 'pink', cursor: 'pointer'}}>Cancel</button>
       </div>
     )
@@ -142,13 +136,14 @@ class Task extends Component {
 
 class EditBox extends Component {
   render() {
-    const { todo, hasInput, edit, handleEdit, handleDelete, handleReSubmit } = this.props;
-      return (
-        <div>
-          {hasInput && edit === todo ? <EditAndSubmit handleEdit={handleEdit} handleReSubmit={handleReSubmit} /> : <Task todo={todo} handleEdit={handleEdit} handleDelete={handleDelete} />}
-        </div>
-      );
-    }
+    const { todo, hasInput, edit, handleEdit, handleDelete, handleSubmit, handleInputChange } = this.props;
+    return (
+      <div>
+        {hasInput && edit === todo ? <EditAndSubmit todo={todo} handleEdit={handleEdit} handleSubmit={handleSubmit} handleInputChange={handleInputChange} /> : <Task todo={todo} handleEdit={handleEdit} handleDelete={handleDelete} />}
+      </div>
+    );
+  }
 }
+
 
 export default ClassInput;
