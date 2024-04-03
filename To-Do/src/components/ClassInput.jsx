@@ -11,7 +11,8 @@ class ClassInput extends Component {
       todos: ['Just some demo tasks', 'As an example'],
       inputVal: '',
       hasInput: false,
-      edit: ''
+      edit: '',
+      editingInputVal: ''
     };
 
 
@@ -19,7 +20,7 @@ class ClassInput extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-
+    this.handleEditingInputChange = this.handleEditingInputChange.bind(this);
   }
 
   handleInputChange(e) {
@@ -44,6 +45,12 @@ class ClassInput extends Component {
       edit: index
     }));
   }
+
+  handleEditingInputChange(e) {
+    this.setState({
+      editingInputVal: e.target.value
+    });
+  }
   
 
   handleDelete(todo) {
@@ -51,7 +58,7 @@ class ClassInput extends Component {
       const updatedTodos = state.todos.filter(item => item !== todo); // Filter out the todo to delete
       return {
         todos: updatedTodos,
-        inputVal: '', // Clear inputVal as you've mentioned
+        inputVal: ''
       };
     });
   }
@@ -80,7 +87,7 @@ class ClassInput extends Component {
         <ul>
           {this.state.todos.map((todo) => (
             <div style={{display: 'flex', margin: '1rem' }}>
-              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} handleSubmit={this.handleSubmit} handleInputChange={this.handleInputChange} />              
+              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} handleEditingInputChange={this.handleEditingInputChange} />              
             </div>
           ))}
         </ul>
@@ -103,15 +110,15 @@ class Count extends Component {
 
 class EditAndSubmit extends Component {
   render() {
-    const { todo, handleEdit, handleSubmit, handleInputChange } = this.props;
+    const { todo, handleEdit, handleEditingInputChange } = this.props;
     return (
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={() => handleEdit(todo)}>
           <input
             type="text"
             name="task-entry"
             value={todo}
-            onChange={handleInputChange}
+            onChange={handleEditingInputChange}
           />
           <button style={{backgroundColor: 'green', cursor: 'pointer'}} type="submit">Resubmit</button>
         </form>
