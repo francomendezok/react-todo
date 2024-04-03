@@ -21,6 +21,7 @@ class ClassInput extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEditingInputChange = this.handleEditingInputChange.bind(this);
+    this.handleResubmit = this.handleResubmit.bind(this)
   }
 
   handleInputChange(e) {
@@ -38,6 +39,24 @@ class ClassInput extends Component {
     }));
   }
 
+  handleResubmit(todo) {
+    this.setState((state) => {
+      const updatedTodos = state.todos.map((existingTodo) => {
+        if (existingTodo === todo) {
+          return state.editingInputVal; 
+        }
+        return existingTodo; 
+      });
+  
+      return {
+        todos: updatedTodos,
+        edit: '', 
+        editingInputVal: ''
+      };
+    });
+  }
+  
+
 
   handleEdit(index) {
     this.setState((state) => ({
@@ -48,9 +67,10 @@ class ClassInput extends Component {
 
   handleEditingInputChange(e) {
     this.setState({
-      editingInputVal: e.target.value
+      editingInputVal: e.target.value,
     });
   }
+  
   
 
   handleDelete(todo) {
@@ -87,7 +107,7 @@ class ClassInput extends Component {
         <ul>
           {this.state.todos.map((todo) => (
             <div style={{display: 'flex', margin: '1rem' }}>
-              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} handleEditingInputChange={this.handleEditingInputChange} />              
+              <EditBox hasInput={this.state.hasInput} edit={this.state.edit} todo={todo} handleEdit={this.handleEdit} handleDelete={this.handleDelete} handleEditingInputChange={this.handleEditingInputChange} handleResubmit={this.handleResubmit}/>              
             </div>
           ))}
         </ul>
@@ -110,14 +130,14 @@ class Count extends Component {
 
 class EditAndSubmit extends Component {
   render() {
-    const { todo, handleEdit, handleEditingInputChange } = this.props;
+    const { todo, handleEdit, handleEditingInputChange, handleResubmit } = this.props;
     return (
       <div>
-        <form onSubmit={() => handleEdit(todo)}>
+        <form onSubmit={() => handleResubmit(todo)}>
           <input
             type="text"
             name="task-entry"
-            value={todo}
+            value={this.editingInputVal}
             onChange={handleEditingInputChange}
           />
           <button style={{backgroundColor: 'green', cursor: 'pointer'}} type="submit">Resubmit</button>
@@ -143,10 +163,10 @@ class Task extends Component {
 
 class EditBox extends Component {
   render() {
-    const { todo, hasInput, edit, handleEdit, handleDelete, handleSubmit, handleInputChange } = this.props;
+    const { todo, hasInput, edit, handleEdit, handleDelete, handleEditingInputChange, handleResubmit } = this.props;
     return (
       <div>
-        {hasInput && edit === todo ? <EditAndSubmit todo={todo} handleEdit={handleEdit} handleSubmit={handleSubmit} handleInputChange={handleInputChange} /> : <Task todo={todo} handleEdit={handleEdit} handleDelete={handleDelete} />}
+        {hasInput && edit === todo ? <EditAndSubmit todo={todo} handleEdit={handleEdit} handleEditingInputChange={handleEditingInputChange} handleResubmit={handleResubmit}/> : <Task todo={todo} handleEdit={handleEdit} handleDelete={handleDelete} />}
       </div>
     );
   }
